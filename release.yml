@@ -7,7 +7,7 @@
     group: usher
     binary_path: bin/usher
     binary_install_path: /usr/bin/usher
-    service_file_src: usher.service
+    service_file_src: build/usher.service
     service_file_dest: /etc/systemd/system/usher.service
 
   tasks:
@@ -33,7 +33,6 @@
         owner: "{{ user }}"
         group: "{{ group }}"
         mode: '0755'
-        remote_src: yes
 
     - name: Copy service file
       notify: Restart usher service
