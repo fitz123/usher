@@ -35,7 +35,7 @@ func main() {
 	r.Get("/api/v1/ticket/validate/{ticket_id}/{user_id}", s.validateHandler)
 	r.Get("/api/v1/ticket/list/{space}", s.listHandler)
 
-	http.ListenAndServe(":8001", r)
+	http.ListenAndServe(":8000", r)
 }
 
 // validateHandler handles ticket validation requests.
