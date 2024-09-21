@@ -1,0 +1,52 @@
+---
+- hosts: edge
+  become: yes
+
+  vars:
+    user: usher
+    group: usher
+    binary_path: bin/usher
+    binary_install_path: /usr/bin/usher
+    service_file_src: usher.service
+    service_file_dest: /etc/systemd/system/usher.service
+
+  tasks:
+    - name: Create group
+      ansible.builtin.group:
+        name: "{{ group }}"
+        state: present
+
+    - name: Create user
+      ansible.builtin.user:
+        name: "{{ user }}"
+        group: "{{ group }}"
+        createhome: no
+        shell: /sbin/nologin
+        system: yes
+
+    - name: Copy binary to /usr/bin
+      tags: release
+      notify: Restart usher service
+      ansible.builtin.copy:
+        src: '{{ binary_path }}'
+        dest: '{{ binary_install_path }}'
+        owner: "{{ user }}"
+        group: "{{ group }}"
+        mode: '0755'
+        remote_src: yes
+
+    - name: Copy service file
+      notify: Restart usher service
+      ansible.builtin.copy:
+        src: '{{ service_file_src }}'
+        dest: '{{ service_file_dest }}'
+        owner: root
+        group: root
+        mode: '0644'
+
+  handlers:
+    - name: Restart usher service
+      ansible.builtin.systemd:
+        state: restarted
+        name: usher.service
+        daemon_reload: yes
