@@ -49,3 +49,4 @@
         state: restarted
         name: usher.service
         daemon_reload: yes
+        enabled: true
